@@ -1,0 +1,14 @@
+{
+  "nasa"        : "NASA",
+  "nasatv"      : "NASA TV",
+  "mostrecent"  : "Most Recent",
+  "mostwatched" : "Most Watched",
+  "toprated"    : "Top Rated",
+  "search"      : "Search ...",
+  "random"      : "Random",
+  "podcasts"    : "Podcasts",
+  "otherpodcasts" : "More Podcasts",
+  "archives"    : "Archives",
+  "nextpage"    : "Next Page...",
+  "page"        : "Page"
+}
