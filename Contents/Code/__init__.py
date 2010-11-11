@@ -1,4 +1,4 @@
-﻿import re,string
+import re,string
 import random
 from PMS import *
 
@@ -35,9 +35,9 @@ CACHE_PHOTO_METADATA    = 691200
 
 def Start():
 
-  Plugin.AddPrefixHandler(NASA_VIDEO_PREFIX, MainMenuVideo, L('nasa'), "icon-default.png", "art-default.png")
-  Plugin.AddPrefixHandler(NASA_AUDIO_PREFIX, MainMenuAudio, L('nasa'), "icon-default.png", "art-default.png")
-  Plugin.AddPrefixHandler(NASA_PHOTO_PREFIX, MainMenuPhoto, L('nasa'), "icon-default.png", "art-default.png")
+  Plugin.AddPrefixHandler(NASA_VIDEO_PREFIX, MainMenuVideo, L('nasa'), "icon-default.png", "art-default.jpg")
+  Plugin.AddPrefixHandler(NASA_AUDIO_PREFIX, MainMenuAudio, L('nasa'), "icon-default.png", "art-default.jpg")
+  Plugin.AddPrefixHandler(NASA_PHOTO_PREFIX, MainMenuPhoto, L('nasa'), "icon-default.png", "art-default.jpg")
 
   Plugin.AddViewGroup("List", viewMode="List", mediaType="items")
   Plugin.AddViewGroup("Details", viewMode="InfoList", mediaType="items")
@@ -45,7 +45,7 @@ def Start():
 
   MediaContainer.title1 = L("nasa")
   MediaContainer.content = 'Items'
-  MediaContainer.art = R('art-default.png')
+  MediaContainer.art = R('art-default.jpg')
   MediaContainer.viewGroup = 'List'
   DirectoryItem.thumb = R('icon-default.png')
 
