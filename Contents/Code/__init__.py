@@ -5,7 +5,7 @@ import random
 
 NASA_VIDEO_PREFIX       = "/video/nasa"
 NASA_AUDIO_PREFIX       = "/music/nasa"
-NASA_PHOTO_PREFIX      = "/photos/nasa"
+NASA_PHOTO_PREFIX       = "/photos/nasa"
 
 NASA_URL                = "http://www.nasa.gov"
 RSS_INDEX               = "http://www.nasa.gov/rss/index.html"
