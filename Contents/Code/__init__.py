@@ -180,6 +180,11 @@ def OtherPodcastChooser(sender):
     # We ignore 'hd' feeds as no one could stream them fast enough in testing (server too slow...)
     
     url = feed.get('href')
+    
+    #prophylactic
+    if url.count('/irrelevant')>0 :
+      url = "http://spitzer.caltech.edu/resource_list/4-IRrelevant-Astronomy?format=xml"
+      
     title = feed.text
     if title.count('HD') > 0 or title.count('Spanish') > 0: # The spanish link is not a podcast
       continue 
@@ -206,18 +211,27 @@ def PodcastEpisodes(sender, title, url):
   dir = MediaContainer()
   dir.viewGroup = 'Details'
   dir.title1 = L('podcasts')
-  dir.title2 = podcast.feed.title
-
-  thumb = podcast.feed.image.href
-
+  try:
+    dir.title2 = podcast.feed.title
+  except:
+    dir.title2 = title 
+  
+  try:  
+    thumb = podcast.feed.image.href
+  except:
+    thumb = R(ICON)
+ 
   for entry in podcast.entries:
     title = entry.title
     url = entry.enclosures[0].url
-    summary = entry.description
+    try:
+     summary = HTML.ElementFromString(entry.description)[0].text_content()
+    except:
+      summary = ''
     try:
       date = Datetime.ParseDate(entry.date).strftime('%a %b %d, %Y')
     except:
-      date = ''
+      date = None
     #Log(url)
   
     if (url.count('mp3') > 0) :
@@ -263,7 +277,7 @@ def Archives(sender, url=VIDEO_ARCHIVES, pageNumber=1):
     dir.title2 = L('archives')
   else:
     dir.title1 = L('archives')
-    dir.title2 = L('page') + " " + pageNumber
+    dir.title2 = L('page') + " " + str(pageNumber)
 
   page = HTML.ElementFromURL(url, cacheTime=CACHE_ARCHIVES)
 
@@ -289,7 +303,7 @@ def Archives(sender, url=VIDEO_ARCHIVES, pageNumber=1):
 
   nextPageUrl = NASA_URL + page.xpath("//a[@class='archive_forward']")[0].get('href')
   if nextPageUrl != url:
-    pageNumber = pageNumber + 1
+    pageNumber = str(int(pageNumber) + 1)
     dir.Append(Function(DirectoryItem(Archives, title=L('nextpage')), url=nextPageUrl, pageNumber=pageNumber))
 
   return dir
