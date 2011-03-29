@@ -16,6 +16,8 @@ VIDEO_ARCHIVES          = "http://www.nasa.gov/multimedia/videogallery/Video_Arc
 NASA_TV                 = "http://www.nasa.gov/multimedia/nasatv/index.html"
 NASA_IMAGE_OF_THE_DAY   = "http://www.nasa.gov/multimedia/imagegallery/iotdxml.xml"
 
+NASA_ONDEMAND = 'http://www.nasa.gov/multimedia/nasatv/on_demand_video.html?param='
+
 MEDIA_NAMESPACE         = {'media':'http://search.yahoo.com/mrss/'}
 ITUNES_NAMESPACE        = {'itunes':'http://www.itunes.com/dtds/podcast-1.0.dtd'}
 
@@ -272,7 +274,7 @@ def FeaturedContent(sender, feature):
 
 def Archives(sender, url=VIDEO_ARCHIVES, pageNumber=1):
 
-  dir = MediaContainer()
+  dir = MediaContainer(replaceParent = True)
   if pageNumber == 1:
     dir.title2 = L('archives')
   else:
@@ -282,6 +284,10 @@ def Archives(sender, url=VIDEO_ARCHIVES, pageNumber=1):
   page = HTML.ElementFromURL(url, cacheTime=CACHE_ARCHIVES)
 
   videos = page.xpath("//div[@id='browseArchive']/ul/li")
+  
+  if pageNumber != 1:
+    prevPageUrl = NASA_URL + page.xpath("//a[@class='archive_backward']")[0].get('href')
+    dir.Append(Function(DirectoryItem(Archives, title=L('previouspage')), url=prevPageUrl, pageNumber=str(int(pageNumber) - 1)))
 
   for video in videos:
 
@@ -291,7 +297,10 @@ def Archives(sender, url=VIDEO_ARCHIVES, pageNumber=1):
       thumb = NASA_URL + thumb
     summary = video.xpath("./p")[0].text
     urlJS = video.xpath("./a")[0].get('href')
-    url = re.search (r"(http://[^']+)'", urlJS).group(1)
+    try:
+      url = re.search (r"(http://[^']+)'", urlJS).group(1)
+    except:
+      url = NASA_ONDEMAND + re.search (r"\('([^']+)'", urlJS).group(1)
     #Log(url)
     
     if (url.count('asx') > 0) :
@@ -302,7 +311,8 @@ def Archives(sender, url=VIDEO_ARCHIVES, pageNumber=1):
   # Check for next page link
 
   nextPageUrl = NASA_URL + page.xpath("//a[@class='archive_forward']")[0].get('href')
-  if nextPageUrl != url:
+  lastPageUrl = NASA_URL + page.xpath("//a[@class='archive_end']")[0].get('href')
+  if nextPageUrl != lastPageUrl:
     pageNumber = str(int(pageNumber) + 1)
     dir.Append(Function(DirectoryItem(Archives, title=L('nextpage')), url=nextPageUrl, pageNumber=pageNumber))
 
